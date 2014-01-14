@@ -1,0 +1,28 @@
+#xkcd {
+	color: black;
+}
+
+#xkcd-main {
+	position: relative;
+	z-index: 1;
+}
+
+#xkcd-title {
+	position: relative;
+	background-color: white;
+	width: 100%;
+	z-index: 1337;
+	
+	text-align: center;
+}
+
+#xkcd-footer {
+	position: absolute;
+	background-color: white;
+	width: 100%;
+	z-index: 1337;
+	
+	bottom: 0px;
+	
+	text-align: center;
+}
