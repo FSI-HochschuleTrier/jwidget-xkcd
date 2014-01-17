@@ -31,6 +31,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	z-index: 1;
 }
 
+#xkcd-image {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 #xkcd-title {
 	position: relative;
 	background-color: white;
