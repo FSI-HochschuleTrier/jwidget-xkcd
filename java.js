@@ -2,8 +2,7 @@
 * xkcd Widget
 *
 * @author Christopher Kaster(INF)
-* @version 0.2.0
-
+* @version 0.2.1
 
 Copyright (C) 2013 Christopher "Kasoki" Kaster
 
@@ -43,6 +42,9 @@ function setup() {
 	panel_width = $("#xkcd").width();
 	panel_height = $("#xkcd").height();
 
+	// remove proplematic images setup
+	add_number_to_oversize_list(1110);	
+
 	load_image();
 }
 
@@ -55,10 +57,12 @@ function load_image() {
 		
 		while(!is_valid_number(random_number)) {
 			random_number = generate_random_number(current_xkcd_number);
+			
+			console.log("try next random number: " + random_number);
 		}
 			
 		// only use the following line for testing purpose
-		//random_number = 1212;
+		//random_number = 1110;
 		
 		var url = "http://anyorigin.com/get?url=http://xkcd.com/" + random_number +
 			"/info.0.json&callback=?";
@@ -81,8 +85,8 @@ function on_image_url_found(url, size, xkcd_id) {
 	
 	// check if image is smaller than the panel
 	if(image_width <= panel_width && image_height <= (panel_height - footer_height)) {	
-		console.log(image_width + " <= " + panel_width);
-		
+		console.log("load xkcd #" + xkcd_id);	
+	
 		// set image
 		$("#xkcd-image").attr("src", url);
 	} else {
@@ -112,25 +116,34 @@ function generate_random_number(max) {
 }
 
 function is_valid_number(number) {
-	if(number <= 0) {
+	if(!(number > 0)) {
 		return false;
 	}
 	
 	var list = localStorage.getItem(XKCD_OVERSIZE_LIST_IDENTIFIER);
+
+	var is_valid = false;
 	
 	if(!list) {
-		return true;
+		console.log("no list found");
+
+		is_valid = true;
 	} else {
 		list = JSON.parse(list);
 	}
 	
+	var found_something = false;
+
 	list.forEach(function(element) {
 		if(element == number) {
-			return false;
+			console.log("#" + number + " is on list of oversized images");
+			
+			is_valid = false;
+			found_something = true;
 		}
 	});
 	
-	return true;
+	return is_valid || !found_something;
 }
 
 function add_number_to_oversize_list(number) {
@@ -141,8 +154,20 @@ function add_number_to_oversize_list(number) {
 	} else {
 		list = JSON.parse(list);
 	}
+
+	var item_already_in_list = false;
+
+	list.forEach(function(element) {
+		if(element == number) {
+			// element is already in list
+			item_already_in_list = true;
+		}
+	});
 	
-	list.push(number);
+	if(!item_already_in_list) {
+		list.push(number);
+		console.log("added #" + number + " to the list of oversized images");
 	
-	localStorage.setItem(XKCD_OVERSIZE_LIST_IDENTIFIER, JSON.stringify(list));
+		localStorage.setItem(XKCD_OVERSIZE_LIST_IDENTIFIER, JSON.stringify(list));
+	}
 }
