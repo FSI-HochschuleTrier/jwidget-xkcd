@@ -2,7 +2,7 @@
 * xkcd Widget
 *
 * @author Christopher Kaster(INF)
-* @version 0.1.4
+* @version 0.2.0
 
 
 Copyright (C) 2013 Christopher "Kasoki" Kaster
