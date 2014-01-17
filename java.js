@@ -2,7 +2,7 @@
 * xkcd Widget
 *
 * @author Christopher Kaster(INF)
-* @version 0.2.1
+* @version 0.2.2
 
 Copyright (C) 2013 Christopher "Kasoki" Kaster
 
@@ -48,19 +48,23 @@ function setup() {
 	load_image();
 }
 
-function load_image() {
+function load_image(xkcd_id) {
 	// get newest xkcd
 	$.getJSON("http://anyorigin.com/get?url=http://xkcd.com/info.0.json&callback=?", function(data) {
 		var current_xkcd_number = data.contents.num;
-		
+	
 		var random_number = -1;
-		
-		while(!is_valid_number(random_number)) {
-			random_number = generate_random_number(current_xkcd_number);
+	
+		// function called without id
+		if(!xkcd_id) {
+			while(!is_valid_number(random_number)) {
+				random_number = generate_random_number(current_xkcd_number);
 			
-			console.log("try next random number: " + random_number);
+				console.log("try next random number: " + random_number);
+			}	
+		} else {
+			random_number = xkcd_id;
 		}
-			
 		// only use the following line for testing purpose
 		//random_number = 1110;
 		
@@ -170,4 +174,12 @@ function add_number_to_oversize_list(number) {
 	
 		localStorage.setItem(XKCD_OVERSIZE_LIST_IDENTIFIER, JSON.stringify(list));
 	}
+}
+
+function print_oversized_image_list() {
+	console.log(localStorage.getItem(XKCD_OVERSIZE_LIST_IDENTIFIER));
+}
+
+function clear_local_storage() {
+	localStorage.clear();
 }
