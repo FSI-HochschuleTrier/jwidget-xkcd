@@ -37,6 +37,8 @@ panel_height = 0;
 interval = null;
 aligned_to_bottom = false;
 
+XKCD_OVERSIZE_LIST_IDENTIFIER = "XKCD_OVERSIZE_LIST_IDENT";
+
 function setup() {
 	panel_width = $("#xkcd").width();
 	panel_height = $("#xkcd").height();
@@ -49,7 +51,11 @@ function load_image() {
 	$.getJSON("http://anyorigin.com/get?url=http://xkcd.com/info.0.json&callback=?", function(data) {
 		var current_xkcd_number = data.contents.num;
 		
-		var random_number = generate_random_number(current_xkcd_number);
+		var random_number = -1;
+		
+		while(!is_valid_number(random_number)) {
+			random_number = generate_random_number(current_xkcd_number);
+		}
 			
 		// only use the following line for testing purpose
 		//random_number = 1212;
@@ -62,13 +68,13 @@ function load_image() {
 			$("#xkcd-footer").text(data.contents.alt);
 			
 			retrieve_image_size(data.contents.img, function(size) {
-				on_image_url_found(data.contents.img, size);
+				on_image_url_found(data.contents.img, size, data.contents.num);
 			});
 		});
 	});
 }
 
-function on_image_url_found(url, size) {
+function on_image_url_found(url, size, xkcd_id) {
 	var image_width = size.width;
 	var image_height = size.height;
 	var footer_height = $("#xkcd-footer").height();
@@ -80,7 +86,8 @@ function on_image_url_found(url, size) {
 		// set image
 		$("#xkcd-image").attr("src", url);
 	} else {
-		// TODO: mark image as too big
+		add_number_to_oversize_list(xkcd_id);
+		
 		load_image();
 	}
 }
@@ -102,4 +109,40 @@ function generate_random_number(max) {
 		random_number : random_number - 1;
 		
 	return random_number;
+}
+
+function is_valid_number(number) {
+	if(number <= 0) {
+		return false;
+	}
+	
+	var list = localStorage.getItem(XKCD_OVERSIZE_LIST_IDENTIFIER);
+	
+	if(!list) {
+		return true;
+	} else {
+		list = JSON.parse(list);
+	}
+	
+	list.forEach(function(element) {
+		if(element == number) {
+			return false;
+		}
+	});
+	
+	return true;
+}
+
+function add_number_to_oversize_list(number) {
+	var list = localStorage.getItem(XKCD_OVERSIZE_LIST_IDENTIFIER);
+	
+	if(!list) {
+		list = [];
+	} else {
+		list = JSON.parse(list);
+	}
+	
+	list.push(number);
+	
+	localStorage.setItem(XKCD_OVERSIZE_LIST_IDENTIFIER, JSON.stringify(list));
 }
