@@ -50,8 +50,8 @@ function setup() {
 
 function load_image(xkcd_id) {
 	// get newest xkcd
-	$.getJSON("http://anyorigin.com/get?url=http://xkcd.com/info.0.json&callback=?", function(data) {
-		var current_xkcd_number = data.contents.num;
+	$.getJSON("widgets/xkcd/wrapper.php?url=http://xkcd.com/info.0.json", function(data) {
+		var current_xkcd_number = data.num;
 
 		if(current_xkcd_number == undefined) {
 			setTimeout(load_image, 200);
@@ -76,15 +76,15 @@ function load_image(xkcd_id) {
 		// only use the following line for testing purpose
 		//random_number = 1110;
 
-		var url = "http://anyorigin.com/get?url=http://xkcd.com/" + random_number +
-			"/info.0.json&callback=?";
+		var url = "widgets/xkcd/wrapper.php?url=http://xkcd.com/" + random_number +
+			"/info.0.json";
 
 		$.getJSON(url, function(data) {
-			$("#xkcd-title").text(data.contents.title + " #" + data.contents.num);
-			$("#xkcd-footer").text(data.contents.alt);
+			$("#xkcd-title").text(data.title + " #" + data.num);
+			$("#xkcd-footer").text(data.alt);
 
-			retrieve_image_size(data.contents.img, function(size) {
-				on_image_url_found(data.contents.img, size, data.contents.num);
+			retrieve_image_size(data.img, function(size) {
+				on_image_url_found(data.img, size, data.num);
 			});
 		});
 	});
