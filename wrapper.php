@@ -1,5 +1,7 @@
 <?php
 $url = $_GET["url"];
+if (!preg_match("/http:\/\/xkcd.com/", $url))
+	exit;
 
 $out = file_get_contents($url);
 
