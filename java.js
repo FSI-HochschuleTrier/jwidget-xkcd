@@ -50,7 +50,7 @@ function setup() {
 
 function load_image(xkcd_id) {
 	// get newest xkcd
-	$.getJSON("//xkcd.com/info.0.json", function(data) {
+	$.getJSON("widgets/xkcd/wrapper.php?url=http://xkcd.com/info.0.json", function(data) {
 		var current_xkcd_number = data.num;
 
 		if(current_xkcd_number == undefined) {
@@ -76,16 +76,15 @@ function load_image(xkcd_id) {
 		// only use the following line for testing purpose
 		//random_number = 1110;
 
-		var url = "//xkcd.com/" + random_number +
+		var url = "widgets/xkcd/wrapper.php?url=http://xkcd.com/" + random_number +
 			"/info.0.json";
 
 		$.getJSON(url, function(data) {
 			$("#xkcd-title").text(data.title + " #" + data.num);
 			$("#xkcd-footer").text(data.alt);
 
-                        var imgUrl = data.img.replace('http://', '//');
-			retrieve_image_size(imgUrl, function(size) {
-				on_image_url_found(imgUrl, size, data.num);
+			retrieve_image_size(data.img, function(size) {
+				on_image_url_found(data.img, size, data.num);
 			});
 		});
 	});
